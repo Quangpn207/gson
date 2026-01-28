@@ -48,6 +48,15 @@
     <!-- These properties are to be overwritten by the Maven modules -->
     <!-- Whether this module is an integration test module -->
     <gson.isTestModule>false</gson.isTestModule>
+
+    <!-- SonarQube properties -->
+    <sonar.java.source>${maven.compiler.release}</sonar.java.source>
+    <sonar.java.target>${maven.compiler.release}</sonar.java.target>
+    <sonar.sourceEncoding>${project.build.sourceEncoding}</sonar.sourceEncoding>
+    <!-- Exclude Java 17 record test files that can't be parsed with Java 8 source level -->
+    <sonar.test.exclusions>**/functional/Java17RecordTest.java,**/native_test/Java17RecordReflectionTest.java</sonar.test.exclusions>
+    <!-- Configure SonarQube to read merged JaCoCo coverage report -->
+    <sonar.coverage.jacoco.xmlReportPaths>gson/target/site/jacoco-merged/jacoco.xml,extras/target/site/jacoco-merged/jacoco.xml,proto/target/site/jacoco-merged/jacoco.xml,test-jpms/target/site/jacoco-merged/jacoco.xml,test-shrinker/target/site/jacoco-merged/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
   </properties>
 
   <!-- These attributes specify that the URLs should be inherited by the modules as is, to avoid constructing
@@ -194,6 +203,12 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+
+      <!-- JaCoCo for code coverage -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
 
       <!-- Publish gson-parent to Maven Central on `deploy` (common configuration is defined in `pluginManagement`) -->
@@ -530,6 +545,84 @@
                 <annotations>
                   <annotation>com.google.gson.internal.bind.IgnoreJRERequirement</annotation>
                 </annotations>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+
+        <!-- SonarQube Maven Plugin -->
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>4.0.0.4121</version>
+        </plugin>
+
+        <!-- JaCoCo Maven Plugin for Code Coverage -->
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.8.12</version>
+          <executions>
+            <!-- Prepare agent for unit tests -->
+            <execution>
+              <id>prepare-agent</id>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+            </execution>
+            <!-- Prepare agent for integration tests -->
+            <execution>
+              <id>prepare-agent-integration</id>
+              <goals>
+                <goal>prepare-agent-integration</goal>
+              </goals>
+            </execution>
+            <!-- Generate report for unit tests -->
+            <execution>
+              <id>report</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+            </execution>
+            <!-- Generate report for integration tests -->
+            <execution>
+              <id>report-integration</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>report-integration</goal>
+              </goals>
+            </execution>
+            <!-- Merge unit and integration test coverage -->
+            <execution>
+              <id>merge-results</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>merge</goal>
+              </goals>
+              <configuration>
+                <fileSets>
+                  <fileSet>
+                    <directory>${project.build.directory}</directory>
+                    <includes>
+                      <include>jacoco.exec</include>
+                      <include>jacoco-it.exec</include>
+                    </includes>
+                  </fileSet>
+                </fileSets>
+                <destFile>${project.build.directory}/jacoco-merged.exec</destFile>
+              </configuration>
+            </execution>
+            <!-- Generate merged report -->
+            <execution>
+              <id>post-merge-report</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+              <configuration>
+                <dataFile>${project.build.directory}/jacoco-merged.exec</dataFile>
+                <outputDirectory>${project.reporting.outputDirectory}/jacoco-merged</outputDirectory>
               </configuration>
             </execution>
           </executions>
