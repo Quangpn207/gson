@@ -92,7 +92,7 @@ import java.util.Objects;
 public final class GsonBuilder {
   private Excluder excluder = Excluder.DEFAULT;
   private LongSerializationPolicy longSerializationPolicy = LongSerializationPolicy.DEFAULT;
-  private FieldNamingStrategy fieldNamingPolicy = FieldNamingPolicy.IDENTITY;
+  private FieldNamingStrategy fieldNamingStrategy = FieldNamingPolicy.IDENTITY;
   private final Map<Type, InstanceCreator<?>> instanceCreators = new HashMap<>();
   private final List<TypeAdapterFactory> factories = new ArrayList<>();
 
@@ -129,7 +129,7 @@ public final class GsonBuilder {
    */
   GsonBuilder(Gson gson) {
     this.excluder = gson.excluder;
-    this.fieldNamingPolicy = gson.fieldNamingStrategy;
+    this.fieldNamingStrategy = gson.fieldNamingStrategy;
     this.instanceCreators.putAll(gson.instanceCreators);
     this.serializeNulls = gson.serializeNulls;
     this.complexMapKeySerialization = gson.complexMapKeySerialization;
@@ -392,7 +392,7 @@ public final class GsonBuilder {
    */
   @CanIgnoreReturnValue
   public GsonBuilder setFieldNamingStrategy(FieldNamingStrategy fieldNamingStrategy) {
-    this.fieldNamingPolicy = Objects.requireNonNull(fieldNamingStrategy);
+    this.fieldNamingStrategy = Objects.requireNonNull(fieldNamingStrategy);
     return this;
   }
 
@@ -897,7 +897,7 @@ public final class GsonBuilder {
 
     return new Gson(
         excluder,
-        fieldNamingPolicy,
+        fieldNamingStrategy,
         new HashMap<>(instanceCreators),
         serializeNulls,
         complexMapKeySerialization,
