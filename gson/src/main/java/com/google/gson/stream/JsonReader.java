@@ -210,6 +210,7 @@ import java.util.Objects;
  */
 public class JsonReader implements Closeable {
   private static final long MIN_INCOMPLETE_INTEGER = Long.MIN_VALUE / 10;
+  private static final int MIN_PRINTABLE_ASCII_CHAR = 0x20;
 
   private static final int PEEKED_NONE = 0;
   private static final int PEEKED_BEGIN_OBJECT = 1;
@@ -1135,7 +1136,7 @@ public class JsonReader implements Closeable {
 
         // In strict mode, throw an exception when meeting unescaped control characters (U+0000
         // through U+001F)
-        if (strictness == Strictness.STRICT && c < 0x20) {
+        if (strictness == Strictness.STRICT && c < MIN_PRINTABLE_ASCII_CHAR) {
           throw syntaxError(
               "Unescaped control characters (\\u0000-\\u001F) are not allowed in strict mode");
         } else if (c == quote) {
