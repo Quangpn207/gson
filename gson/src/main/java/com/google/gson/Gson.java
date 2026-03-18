@@ -16,8 +16,8 @@
 
 package com.google.gson;
 
-import static com.google.gson.internal.bind.TypeAdapters.atomicLongAdapter;
-import static com.google.gson.internal.bind.TypeAdapters.atomicLongArrayAdapter;
+import static com.google.gson.internal.bind.AtomicTypeAdapters.atomicLongAdapter;
+import static com.google.gson.internal.bind.AtomicTypeAdapters.atomicLongArrayAdapter;
 
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.internal.ConstructorConstructor;
@@ -342,12 +342,12 @@ public final class Gson {
     factories.add(TypeAdapters.newFactory(double.class, Double.class, doubleAdapter()));
     factories.add(TypeAdapters.newFactory(float.class, Float.class, floatAdapter()));
     factories.add(NumberTypeAdapter.getFactory(numberToNumberStrategy));
-    factories.add(TypeAdapters.ATOMIC_INTEGER_FACTORY);
-    factories.add(TypeAdapters.ATOMIC_BOOLEAN_FACTORY);
+    factories.add(com.google.gson.internal.bind.AtomicTypeAdapters.ATOMIC_INTEGER_FACTORY);
+    factories.add(com.google.gson.internal.bind.AtomicTypeAdapters.ATOMIC_BOOLEAN_FACTORY);
     factories.add(TypeAdapters.newFactory(AtomicLong.class, atomicLongAdapter(longAdapter)));
     factories.add(
         TypeAdapters.newFactory(AtomicLongArray.class, atomicLongArrayAdapter(longAdapter)));
-    factories.add(TypeAdapters.ATOMIC_INTEGER_ARRAY_FACTORY);
+    factories.add(com.google.gson.internal.bind.AtomicTypeAdapters.ATOMIC_INTEGER_ARRAY_FACTORY);
     factories.add(TypeAdapters.CHARACTER_FACTORY);
     factories.add(TypeAdapters.STRING_BUILDER_FACTORY);
     factories.add(TypeAdapters.STRING_BUFFER_FACTORY);
