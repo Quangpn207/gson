@@ -25,6 +25,7 @@ import com.google.gson.internal.Excluder;
 import com.google.gson.internal.GsonBuildConfig;
 import com.google.gson.internal.Primitives;
 import com.google.gson.internal.Streams;
+import com.google.gson.internal.bind.AtomicTypeAdapters;
 import com.google.gson.internal.bind.ArrayTypeAdapter;
 import com.google.gson.internal.bind.CollectionTypeAdapterFactory;
 import com.google.gson.internal.bind.DefaultDateTypeAdapter;
@@ -36,6 +37,8 @@ import com.google.gson.internal.bind.NumberTypeAdapter;
 import com.google.gson.internal.bind.ObjectTypeAdapter;
 import com.google.gson.internal.bind.ReflectiveTypeAdapterFactory;
 import com.google.gson.internal.bind.SerializationDelegatingTypeAdapter;
+import com.google.gson.internal.bind.CommonTypeAdapters;
+import com.google.gson.internal.bind.NumericTypeAdapters;
 import com.google.gson.internal.bind.TypeAdapters;
 import com.google.gson.internal.sql.SqlTypesSupport;
 import com.google.gson.reflect.TypeToken;
@@ -332,36 +335,36 @@ public final class Gson {
     factories.addAll(factoriesToBeAdded);
 
     // type adapters for basic platform types
-    factories.add(TypeAdapters.STRING_FACTORY);
-    factories.add(TypeAdapters.INTEGER_FACTORY);
-    factories.add(TypeAdapters.BOOLEAN_FACTORY);
-    factories.add(TypeAdapters.BYTE_FACTORY);
-    factories.add(TypeAdapters.SHORT_FACTORY);
+    factories.add(CommonTypeAdapters.STRING_FACTORY);
+    factories.add(NumericTypeAdapters.INTEGER_FACTORY);
+    factories.add(CommonTypeAdapters.BOOLEAN_FACTORY);
+    factories.add(NumericTypeAdapters.BYTE_FACTORY);
+    factories.add(NumericTypeAdapters.SHORT_FACTORY);
     TypeAdapter<Number> longAdapter = longSerializationPolicy.typeAdapter();
     factories.add(TypeAdapters.newFactory(long.class, Long.class, longAdapter));
     factories.add(TypeAdapters.newFactory(double.class, Double.class, doubleAdapter()));
     factories.add(TypeAdapters.newFactory(float.class, Float.class, floatAdapter()));
     factories.add(NumberTypeAdapter.getFactory(numberToNumberStrategy));
-    factories.add(com.google.gson.internal.bind.AtomicTypeAdapters.ATOMIC_INTEGER_FACTORY);
-    factories.add(com.google.gson.internal.bind.AtomicTypeAdapters.ATOMIC_BOOLEAN_FACTORY);
+    factories.add(AtomicTypeAdapters.ATOMIC_INTEGER_FACTORY);
+    factories.add(AtomicTypeAdapters.ATOMIC_BOOLEAN_FACTORY);
     factories.add(TypeAdapters.newFactory(AtomicLong.class, atomicLongAdapter(longAdapter)));
     factories.add(
         TypeAdapters.newFactory(AtomicLongArray.class, atomicLongArrayAdapter(longAdapter)));
-    factories.add(com.google.gson.internal.bind.AtomicTypeAdapters.ATOMIC_INTEGER_ARRAY_FACTORY);
-    factories.add(TypeAdapters.CHARACTER_FACTORY);
-    factories.add(TypeAdapters.STRING_BUILDER_FACTORY);
-    factories.add(TypeAdapters.STRING_BUFFER_FACTORY);
-    factories.add(TypeAdapters.BIG_DECIMAL_FACTORY);
-    factories.add(TypeAdapters.BIG_INTEGER_FACTORY);
+    factories.add(AtomicTypeAdapters.ATOMIC_INTEGER_ARRAY_FACTORY);
+    factories.add(CommonTypeAdapters.CHARACTER_FACTORY);
+    factories.add(CommonTypeAdapters.STRING_BUILDER_FACTORY);
+    factories.add(CommonTypeAdapters.STRING_BUFFER_FACTORY);
+    factories.add(NumericTypeAdapters.BIG_DECIMAL_FACTORY);
+    factories.add(NumericTypeAdapters.BIG_INTEGER_FACTORY);
     // Add adapter for LazilyParsedNumber because user can obtain it from Gson and then try to
     // serialize it again
-    factories.add(TypeAdapters.LAZILY_PARSED_NUMBER_FACTORY);
-    factories.add(TypeAdapters.URL_FACTORY);
-    factories.add(TypeAdapters.URI_FACTORY);
-    factories.add(TypeAdapters.UUID_FACTORY);
-    factories.add(TypeAdapters.CURRENCY_FACTORY);
-    factories.add(TypeAdapters.LOCALE_FACTORY);
-    factories.add(TypeAdapters.INET_ADDRESS_FACTORY);
+    factories.add(NumericTypeAdapters.LAZILY_PARSED_NUMBER_FACTORY);
+    factories.add(CommonTypeAdapters.URL_FACTORY);
+    factories.add(CommonTypeAdapters.URI_FACTORY);
+    factories.add(CommonTypeAdapters.UUID_FACTORY);
+    factories.add(CommonTypeAdapters.CURRENCY_FACTORY);
+    factories.add(CommonTypeAdapters.LOCALE_FACTORY);
+    factories.add(CommonTypeAdapters.INET_ADDRESS_FACTORY);
     factories.add(TypeAdapters.BIT_SET_FACTORY);
     factories.add(DefaultDateTypeAdapter.DEFAULT_STYLE_FACTORY);
     factories.add(TypeAdapters.CALENDAR_FACTORY);
@@ -440,11 +443,15 @@ public final class Gson {
   }
 
   private TypeAdapter<Number> floatAdapter() {
-    return serializeSpecialFloatingPointValues ? TypeAdapters.FLOAT : TypeAdapters.FLOAT_STRICT;
+    return serializeSpecialFloatingPointValues
+        ? NumericTypeAdapters.FLOAT
+        : NumericTypeAdapters.FLOAT_STRICT;
   }
 
   private TypeAdapter<Number> doubleAdapter() {
-    return serializeSpecialFloatingPointValues ? TypeAdapters.DOUBLE : TypeAdapters.DOUBLE_STRICT;
+    return serializeSpecialFloatingPointValues
+        ? NumericTypeAdapters.DOUBLE
+        : NumericTypeAdapters.DOUBLE_STRICT;
   }
 
   /**

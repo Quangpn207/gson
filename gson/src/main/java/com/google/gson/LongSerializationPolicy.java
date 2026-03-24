@@ -16,7 +16,7 @@
 
 package com.google.gson;
 
-import com.google.gson.internal.bind.TypeAdapters;
+import com.google.gson.internal.bind.NumericTypeAdapters;
 
 /**
  * Defines the expected format for a {@code long} or {@code Long} type when it is serialized.
@@ -44,7 +44,7 @@ public enum LongSerializationPolicy {
 
     @Override
     TypeAdapter<Number> typeAdapter() {
-      return TypeAdapters.LONG;
+      return NumericTypeAdapters.LONG;
     }
   },
 
@@ -65,7 +65,7 @@ public enum LongSerializationPolicy {
 
     @Override
     TypeAdapter<Number> typeAdapter() {
-      return TypeAdapters.LONG_AS_STRING;
+      return NumericTypeAdapters.LONG_AS_STRING;
     }
   };
 
